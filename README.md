@@ -1,2 +1,1 @@
-# api_final
-api final
+Проект занимается API работой yatube сервиса
