@@ -11,6 +11,9 @@ class Post(models.Model):
         User, on_delete=models.CASCADE, related_name='posts')
     image = models.ImageField(
         upload_to='posts/', null=True, blank=True)
+    group = models.ForeignKey(
+        'Group', on_delete=models.SET_NULL,
+        related_name='posts', null=True, blank=True)
 
     def __str__(self):
         return self.text
@@ -24,3 +27,27 @@ class Comment(models.Model):
     text = models.TextField()
     created = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True)
+    
+
+class Group(models.Model):
+    title = models.CharField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=50, unique=False)
+    description = models.TextField(max_length=1000)
+
+    def __str__(self):
+        return self.title
+    
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='follower')
+    following = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='following')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'following'],
+                name='unique_following'
+            )
+        ]
